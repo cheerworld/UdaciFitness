@@ -32,9 +32,14 @@ export default class App extends React.Component {
     const { input, showInput } = this.state;
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
+        <Image source={require("./headshotsmall5.png")} style={styles.img} />
+        <View style={{ margin: 50 }} />
         <Image
-          source={require("./headshotsmall5.png")}
           style={styles.img}
+          source={{
+            uri:
+              "https://scontent-bos3-1.cdninstagram.com/v/t51.2885-19/s320x320/71526816_951098961915006_5073972027308638208_n.jpg?tp=1&_nc_ht=scontent-bos3-1.cdninstagram.com&_nc_ohc=q7TFmANx9bQAX9rCfet&ccb=7-4&oh=0c835fc508170585e8a270fc07381191&oe=60821C7A&_nc_sid=7bff83",
+          }}
         />
         <Switch value={showInput} onValueChange={this.handleToggleSwitch} />
 
