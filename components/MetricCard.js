@@ -6,7 +6,7 @@ import { gray } from "../utils/colors";
 export default function MetricCard({ metrics }) {
   return (
     <View>
-      {Object.keys(metrics).map((metric) => {
+      {metrics && Object.keys(metrics).map((metric) => {
         const {
           getIcon,
           displayName,
