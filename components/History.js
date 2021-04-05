@@ -44,7 +44,7 @@ class History extends Component {
   }
 
   renderItem = (selectedDate, { today, ...metrics }, firstItemInDay) => {
-    console.log(selectedDate)
+    //console.log(selectedDate)
     return (
     <View style={styles.item}>
       {today ? (
@@ -66,7 +66,7 @@ class History extends Component {
   )};
 
   onDayPress = (day) => {
-    console.log(day);
+    //console.log(day);
     this.setState({
       selectedDate: day.dateString
     })
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(entries) {
-  console.log(entries);
+  //console.log(entries);
   return {
     entries,
   };
