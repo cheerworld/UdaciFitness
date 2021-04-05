@@ -44,7 +44,7 @@ class History extends Component {
   }
 
   renderItem = (selectedDate, { today, ...metrics }, firstItemInDay) => {
-    //console.log(selectedDate)
+    console.log("firstItemInDay", firstItemInDay)
     return (
     <View style={styles.item}>
       {today ? (

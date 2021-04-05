@@ -77,6 +77,7 @@ class AddEntry extends Component {
     }));
 
     // Navigate to home
+    this.toHome();
 
     submitEntry({ entry, key });
 
@@ -91,9 +92,14 @@ class AddEntry extends Component {
     }))
 
     //Route to home
+    this.toHome();
 
     removeEntry(key)
   };
+
+  toHome = () => {
+    this.props.navigation.navigate("History")
+  }
 
   render() {
     const metaInfo = getMetricMetaInfo();
