@@ -8,6 +8,9 @@ import {
 } from "react-native";
 import { Foundation } from "@expo/vector-icons";
 import { purple, white } from "../utils/colors";
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+import { calculateDirection } from "../utils/helpers";
 
 export default class Live extends Component {
   state = {
@@ -16,7 +19,39 @@ export default class Live extends Component {
     direction: "",
   };
 
+  async componentDidMount () {
+    try {
+      const { status } = await Permissions.getAsync(Permissions.LOCATION);
+      if (status === "granted") {
+        return this.setLocation();
+      }
+      this.setState({status});
+    } catch (err) {
+      console.warn("Error getting location permission");
+      this.setState({status: 'undetermined'})
+    }  
+  }
+
   askPermission = () => {};
+
+  setLocation = () => {
+    Location.watchPositionAsync({
+      accuracy: Location.Accuracy.BestForNavigation,
+      timeInterval: 100,
+      distanceInterval: 1
+    }, ({coords}) => {
+      console.log(coords);
+      const newDirection = calculateDirection(coords.heading);
+      const { direction } =this.state;
+
+      this.setState(() => ({
+        coords,
+        status: "granted",
+        direction: newDirection,
+      }))
+
+    })
+  }
 
   render() {
     const { status, coords, direction } = this.state;
