@@ -15,7 +15,7 @@ import { calculateDirection } from "../utils/helpers";
 export default class Live extends Component {
   state = {
     coords: null,
-    status: "granted",
+    status: null,
     direction: "",
   };
 
@@ -29,10 +29,23 @@ export default class Live extends Component {
     } catch (err) {
       console.warn("Error getting location permission");
       this.setState({status: 'undetermined'})
-    }  
+    }
   }
 
-  askPermission = () => {};
+  askPermission = async () => {
+    try {
+      const { status } = await Permissions.askAsync(Permissions.LOCATION);
+      if (status === "granted") {
+        return this.setLocation();
+      }
+
+      this.setState(() => ({ status }));
+    } catch (err) {
+      console.warn("Error asking Location permission: ", err);
+      this.setState({status: 'undetermined'})
+    }
+
+  };
 
   setLocation = () => {
     Location.watchPositionAsync({
@@ -88,16 +101,16 @@ export default class Live extends Component {
       <View style={styles.container}>
         <View style={styles.directionContainer}>
           <Text style={styles.header}>You're heading</Text>
-          <Text style={styles.direction}>North</Text>
+          <Text style={styles.direction}>{direction}</Text>
         </View>
         <View style={styles.metricContainer}>
           <View style={styles.metric}>
             <Text style={[styles.header, { color: white }]}>Altitude</Text>
-            <Text style={[styles.subHeader, { color: white }]}>{200} feet</Text>
+            <Text style={[styles.subHeader, { color: white }]}>{Math.round(coords.altitude * 3.2808)} feet</Text>
           </View>
           <View style={styles.metric}>
             <Text style={[styles.header, { color: white }]}>Speed</Text>
-            <Text style={[styles.subHeader, { color: white }]}>{300} MPH</Text>
+            <Text style={[styles.subHeader, { color: white }]}>{(coords.speed * 2.2369).toFixed(1)} MPH</Text>
           </View>
         </View>
       </View>
