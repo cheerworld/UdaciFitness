@@ -14,6 +14,7 @@ import Constants from "expo-constants";
 import EntryDetail from "./components/EntryDetail";
 import { createStackNavigator } from "@react-navigation/stack";
 import Live from "./components/Live";
+import { setLocalNotification } from './utils/helpers';
 
 function UdaciStatusBar({ backgroundColor, ...props }) {
   return (
@@ -108,6 +109,9 @@ function MainNavigator() {
 }
 
 export default class App extends React.Component {
+  componentDidMount() {
+    setLocalNotification()
+  }
   render() {
     return (
       <Provider store={createStore(reducer)}>

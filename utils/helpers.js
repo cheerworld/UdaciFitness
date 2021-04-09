@@ -3,6 +3,11 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { FontAwesome, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { white, red, orange, blue, lightPurp, pink } from "./colors";
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const NOTIFICATION_KEY = 'UdaciFitness:notifications';
 
 export function isBetween (num, x, y) {
   if (num >= x && num <= y) {
@@ -161,4 +166,55 @@ export function getDailyReminderValue () {
   return [{
     today: "👋 Don't forget to log your data today!"
   }]
+}
+
+
+export function clearLocalNotification () {
+  return AsyncStorage.removeItem(NOTIFICATION_KEY)
+    .then(Notifications.cancelAllScheduledNotificationsAsync())
+    .catch((err) => console.error("Problem with clearLocalNotification:", err))
+}
+
+export function setLocalNotification () {
+  AsyncStorage.getItem(NOTIFICATION_KEY)
+    .then(JSON.parse)
+    .then((data) => {
+      console.log("notification key ", data)
+      if (data === null) {
+        Permissions.askAsync(Permissions.NOTIFICATIONS)
+          .then(({ status }) => {
+            console.log("status", status)
+
+            if (status === "granted") {
+
+              Notifications.cancelAllScheduledNotificationsAsync()
+
+              Notifications.setNotificationHandler({
+                handleNotification: async () => ({
+                  shouldPlaySound: true,
+                  shouldShowAlert: true,
+                  shouldSetBadge: false
+                })
+              })
+
+              let tomorrow = new Date();
+              tomorrow.setDate(tomorrow.getDate() + 1);
+              tomorrow.setHours(20);
+              tomorrow.setMinutes(0);
+
+              Notifications.scheduleNotificationAsync({
+                content: {
+                  title: "Log your stats",
+                  body: "👋 Hey! Don't forget to log your stats for today!",
+                },
+                trigger: tomorrow
+              })
+
+              AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true))
+            }
+          })
+          .catch((err) => console.error("Problem with asking notification permissions:", err))
+      }
+    })
+    .catch((err) => console.error("Problem with getting NOTIFICATION_KEY:", err))
 }
